@@ -1,22 +1,38 @@
 package com.example.officebureauapi.entities;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
+import org.hibernate.annotations.GenericGenerator;
 
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
 @Data
+@EqualsAndHashCode(of = {"id"})
+@Builder(toBuilder = true)
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
+@Table(name = "users")
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private UUID id;
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+    @Column(nullable = false)
+    private String id;
 
+    @Column(unique = true, nullable = false)
     private String username;
+    @Column(unique = true, nullable = false)
+    private String email;
 
-    //TODO add encrypted password
+    @Column(nullable = false)
+    private String password;
+
+    @Builder.Default
+    @Column(name = "isDeleted", columnDefinition = "boolean default false", nullable = false)
+    private boolean isDeleted = false;
 
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinTable(
