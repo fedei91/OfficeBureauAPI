@@ -26,7 +26,7 @@ public class Reservation {
     @Column(name = "desktop_id")
     private String desktopId;
 
-    private LocalDateTime startDate;
-    private LocalDateTime endDate;
+    private LocalDateTime startTstamp;
+    private LocalDateTime endTstamp;
 
 }
