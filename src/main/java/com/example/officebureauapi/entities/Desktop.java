@@ -1,20 +1,26 @@
 package com.example.officebureauapi.entities;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
+import org.hibernate.annotations.UuidGenerator;
 
 import java.util.UUID;
 
 @Data
+@EqualsAndHashCode(of = {"id"})
+@Builder(toBuilder = true)
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
+@Table(name = "desktops")
 public class Desktop {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @UuidGenerator
+    @Column(nullable = false)
     private UUID id;
 
-    @ManyToOne
-    @JoinColumn(name = "department_id")
-    private Department department;
+    @Column(name = "department_id")
+    private String departmentId;
 
 
 }
