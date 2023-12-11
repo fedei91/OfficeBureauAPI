@@ -1,21 +1,16 @@
 package com.example.officebureauapi.entities;
 
-import jakarta.persistence.*;
-import lombok.Data;
+public enum Role {
+    USER("User"),
+    ADMIN("Administrator");
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
+    private final String displayName;
 
-@Data
-@Entity
-public class Role {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private UUID id;
+    Role(String displayName) {
+        this.displayName = displayName;
+    }
 
-    private String name;
-
-    @ManyToMany(mappedBy = "roles")
-    private Set<User> users = new HashSet<>();
+    public String getDisplayName() {
+        return displayName;
+    }
 }
