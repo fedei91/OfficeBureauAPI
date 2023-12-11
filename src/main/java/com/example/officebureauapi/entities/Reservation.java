@@ -1,25 +1,30 @@
 package com.example.officebureauapi.entities;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
+import org.hibernate.annotations.UuidGenerator;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Data
+@EqualsAndHashCode(of = {"id"})
+@Builder(toBuilder = true)
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
+@Table(name = "reservations")
 public class Reservation {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @UuidGenerator
+    @Column(nullable = false)
     private UUID id;
 
-    @ManyToOne
-    @JoinColumn(name = "employee_id")
-    private Employee employee;
+    @Column(name = "employee_id")
+    private String employeeId;
 
-    @ManyToOne
-    @JoinColumn(name = "desktop_id")
-    private Desktop desktop;
+    @Column(name = "desktop_id")
+    private String desktopId;
 
     private LocalDateTime startDate;
     private LocalDateTime endDate;
