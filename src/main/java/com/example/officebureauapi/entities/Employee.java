@@ -31,4 +31,7 @@ public class Employee {
 
     @OneToMany(mappedBy = "supervisorId", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Employee> employeesInCharge = new HashSet<>();
+
+    @Column(name = "is_deleted", columnDefinition = "boolean default false", nullable = false)
+    private boolean isDeleted = false;
 }

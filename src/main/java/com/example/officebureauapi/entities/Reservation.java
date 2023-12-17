@@ -29,4 +29,7 @@ public class Reservation {
     private LocalDateTime startTstamp;
     private LocalDateTime endTstamp;
 
+    @Column(name = "is_deleted", columnDefinition = "boolean default false", nullable = false)
+    private boolean isDeleted = false;
+
 }
