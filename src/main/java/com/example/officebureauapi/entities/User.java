@@ -30,7 +30,7 @@ public class User {
     private String password;
 
     @Builder.Default
-    @Column(name = "isDeleted", columnDefinition = "boolean default false", nullable = false)
+    @Column(name = "is_deleted", columnDefinition = "boolean default false", nullable = false)
     private boolean isDeleted = false;
 
     @ElementCollection(targetClass = Role.class, fetch = FetchType.LAZY)

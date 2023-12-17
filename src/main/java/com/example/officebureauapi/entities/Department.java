@@ -20,4 +20,7 @@ public class Department {
     private UUID id;
 
     private String name;
+
+    @Column(name = "is_deleted", columnDefinition = "boolean default false", nullable = false)
+    private boolean isDeleted = false;
 }
