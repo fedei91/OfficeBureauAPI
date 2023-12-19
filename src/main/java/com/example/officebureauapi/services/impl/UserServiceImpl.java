@@ -1,12 +1,15 @@
 package com.example.officebureauapi.services.impl;
 
+import com.example.officebureauapi.dto.UserDto;
 import com.example.officebureauapi.entities.User;
+import com.example.officebureauapi.exceptions.DuplicateEmailException;
+import com.example.officebureauapi.mappers.entitytodto.UserEntityToDtoMapper;
 import com.example.officebureauapi.repositories.UserRepository;
 import com.example.officebureauapi.services.UserService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -16,20 +19,24 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
 
     @NonNull
-    private final UserRepository userRepository;
+    private BCryptPasswordEncoder passwordEncoder;
     @NonNull
-    private final PasswordEncoder passwordEncoder;
+    private UserRepository userRepository;
+    @NonNull
+    private UserEntityToDtoMapper userEntityToDtoMapper;
 
     @Override
-    public User register(User user) {
-        String encodedPassword = passwordEncoder.encode(user.getPassword());
-        user.setPassword(encodedPassword);
+    public UserDto register(UserDto userDto) {
+        if (userRepository.findByEmail(userDto.getEmail()) != null) {
+            throw new DuplicateEmailException("Email already registered: " + userDto.getEmail());
+        }
+        User user = User.builder().build();
+        user = userEntityToDtoMapper.toEntity(userDto, user);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
 
-        User savedUser = userRepository.save(user);
-        userRepository.save(savedUser);
-
-
-        return savedUser;
+        userRepository.saveAndFlush(user);
+        userDto.setId(user.getId().toString());
+        return userDto;
     }
 
     @Override
@@ -43,18 +50,32 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User update(String id) {
-        Optional<User> existingUser = userRepository.findById(id);
-        if (existingUser.isEmpty()) {
-            throw new EntityNotFoundException(String.format("No user found with id %s", id));
+    public UserDto update(UserDto userDto) {
+        String userId = userDto.getId();
+        if (userId == null) {
+            throw new IllegalArgumentException("User id must not be null");
+
         }
 
-        return userRepository.save(existingUser.get());
+        Optional<User> existingUser = userRepository.findById(userId);
+
+        return existingUser.map(user -> {
+            User updatedUser = User.builder()
+                    .isDeleted(userDto.getIsDeleted())
+                    .email(userDto.getEmail())
+                    .username(userDto.getUserName())
+                    .password(userDto.getPassword())
+                    .build();
+
+                    return userEntityToDtoMapper.toDto(userRepository.saveAndFlush(updatedUser));
+        })
+                .orElseThrow( () -> new EntityNotFoundException(String.format("No user found with id %s", userId)));
+
      }
 
     @Override
-    public User delete(String id) {
-        return userRepository.findById(id)
+    public void delete(String id) {
+        userRepository.findById(id)
                 .map(user -> {
                     user.setDeleted(true);
                     return userRepository.saveAndFlush(user);
