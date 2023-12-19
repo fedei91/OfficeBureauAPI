@@ -1,16 +1,20 @@
 package com.example.officebureauapi.dto;
 
-import lombok.Builder;
-import lombok.Data;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.*;
+import lombok.extern.jackson.Jacksonized;
 
-@Data
+@Getter
+@Setter
 @Builder(toBuilder = true)
-//@Value
-//@Jacksonized
-//@JsonInclude(JsonInclude.Include.ALWAYS)
-//@JsonIgnoreProperties(ignoreUnknown = true)
+@NoArgsConstructor(access = AccessLevel.PUBLIC)
+@AllArgsConstructor
+@Jacksonized
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class UserDto {
+    String id;
     String userName;
     String email;
-
+    String password;
+    Boolean isDeleted;
 }
