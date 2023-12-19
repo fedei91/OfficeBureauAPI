@@ -1,11 +1,12 @@
 package com.example.officebureauapi.services;
 
+import com.example.officebureauapi.dto.UserDto;
 import com.example.officebureauapi.entities.User;
 
 public interface UserService {
-    User register(User user);
+    UserDto register(UserDto userDto);
     User getUserByEmail(String email);
     void save(User user);
-    User update(String id);
-    User delete(String id);
+    UserDto update(UserDto userDto);
+    void delete(String id);
 }
