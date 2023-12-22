@@ -3,6 +3,8 @@ package com.example.officebureauapi.entities;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.UuidGenerator;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -26,8 +28,10 @@ public class Reservation {
     @Column(name = "desktop_id")
     private String desktopId;
 
+    @CreatedDate
     private LocalDateTime startTstamp;
-    private LocalDateTime endTstamp;
+    @LastModifiedDate
+    private LocalDateTime lastTstamp;
 
     @Column(name = "is_deleted", columnDefinition = "boolean default false", nullable = false)
     private boolean isDeleted = false;
