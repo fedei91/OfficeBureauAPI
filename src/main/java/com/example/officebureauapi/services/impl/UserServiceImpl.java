@@ -7,28 +7,24 @@ import com.example.officebureauapi.mappers.entitytodto.UserEntityToDtoMapper;
 import com.example.officebureauapi.repositories.UserRepository;
 import com.example.officebureauapi.services.UserService;
 import jakarta.persistence.EntityNotFoundException;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class UserServiceImpl implements UserService {
 
-    @Autowired
     private final BCryptPasswordEncoder passwordEncoder;
-    @NonNull
     private UserRepository userRepository;
-    @NonNull
     private UserEntityToDtoMapper userEntityToDtoMapper;
 
     @Override
     public UserDto register(UserDto userDto) {
-        if (userRepository.findByEmail(userDto.getEmail()) != null) {
+        if (userRepository.findByEmail(userDto.getEmail()).isPresent()) {
             throw new DuplicateEmailException("Email already registered: " + userDto.getEmail());
         }
         User user = User.builder().build();
@@ -53,7 +49,7 @@ public class UserServiceImpl implements UserService {
 
         }
 
-        Optional<User> existingUser = userRepository.findById(userId);
+        Optional<User> existingUser = userRepository.findById(UUID.fromString(userId));
 
         return existingUser.map(user -> {
             User updatedUser = User.builder()
@@ -71,7 +67,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void delete(String id) {
-        userRepository.findById(id)
+        userRepository.findById(UUID.fromString(id))
                 .map(user -> {
                     user.setDeleted(true);
                     return userRepository.saveAndFlush(user);
