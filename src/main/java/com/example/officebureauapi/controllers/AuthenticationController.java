@@ -4,9 +4,13 @@ import com.example.officebureauapi.dto.AuthenticationRequestDto;
 import com.example.officebureauapi.dto.AuthenticationResponseDto;
 import com.example.officebureauapi.dto.RegisterRequestDto;
 import com.example.officebureauapi.services.AuthenticationService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
 
 @RestController
 @RequestMapping("/api/v1/auth")
@@ -23,9 +27,17 @@ public class AuthenticationController {
     }
 
     @PostMapping("/authenticate")
-    public ResponseEntity<AuthenticationResponseDto> register(
+    public ResponseEntity<AuthenticationResponseDto> authenticate(
             @RequestBody AuthenticationRequestDto request
     ) {
         return ResponseEntity.ok(authenticationService.authenticate(request));
+    }
+
+    @PostMapping("/refresh-token")
+    public void refreshToken(
+            HttpServletRequest request,
+            HttpServletResponse response
+    ) throws IOException {
+        authenticationService.refreshToken(request, response);
     }
 }
