@@ -13,7 +13,6 @@ import lombok.extern.jackson.Jacksonized;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class UserDto {
     String id;
-    String userName;
     String email;
     String password;
     Boolean isDeleted;

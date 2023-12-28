@@ -27,10 +27,9 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private UUID id;
 
-    @Column(unique = true, nullable = false)
-    private String username;
-
+    @Column(name = "first_name", nullable = false)
     private String firstName;
+    @Column(name = "last_name", nullable = false)
     private String lastName;
 
     @Email(message = "Please provide a valid email address", regexp = "[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,3}",
@@ -55,6 +54,16 @@ public class User implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return role.getAuthorities();
+    }
+
+    @Override
+    public String getPassword() {
+        return password;
+    }
+
+    @Override
+    public String getUsername() {
+        return email;
     }
 
     @Override

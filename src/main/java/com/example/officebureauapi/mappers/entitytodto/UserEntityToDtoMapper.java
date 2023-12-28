@@ -13,7 +13,6 @@ public class UserEntityToDtoMapper implements EntityToDtoMapper<User, UserDto> {
     public UserDto toDto(User entity) {
         UserDto dto = new UserDto();
         dto.setId(entity.getId().toString());
-        dto.setUserName(entity.getUsername());
         dto.setEmail(entity.getEmail());
 
         return dto;
@@ -21,7 +20,6 @@ public class UserEntityToDtoMapper implements EntityToDtoMapper<User, UserDto> {
 
     @Override
     public User toEntity(UserDto dto, User entity) {
-        entity.setUsername(dto.getUserName());
         entity.setEmail(dto.getEmail());
         entity.setPassword(dto.getPassword());
         entity.setDeleted(dto.getIsDeleted());
