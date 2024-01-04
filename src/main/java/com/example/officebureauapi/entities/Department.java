@@ -6,8 +6,8 @@ import org.hibernate.annotations.UuidGenerator;
 
 import java.util.UUID;
 
-@Data
-@EqualsAndHashCode(of = {"id"})
+@Getter
+@Setter
 @Builder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor

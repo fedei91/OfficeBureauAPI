@@ -17,5 +17,5 @@ public class UserDto {
     String id;
     String email;
     String password;
-    Boolean isDeleted;
+    boolean isDeleted;
 }

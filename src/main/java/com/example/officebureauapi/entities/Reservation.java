@@ -12,8 +12,8 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-@Data
-@EqualsAndHashCode(of = {"id"})
+@Getter
+@Setter
 @Builder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
@@ -41,10 +41,10 @@ public class Reservation {
 
     @CreatedBy
     @Column(nullable = false, updatable = false)
-    private Integer createdBy;
+    private UUID createdBy;
     @LastModifiedBy
     @Column(insertable = false)
-    private Integer lastModifiedBy;
+    private UUID lastModifiedBy;
 
     @Column(name = "is_deleted", columnDefinition = "boolean default false", nullable = false)
     private boolean isDeleted = false;

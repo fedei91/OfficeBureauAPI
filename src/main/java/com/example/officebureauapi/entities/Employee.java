@@ -8,8 +8,8 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-@Data
-@EqualsAndHashCode(of = {"id"})
+@Getter
+@Setter
 @Builder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
