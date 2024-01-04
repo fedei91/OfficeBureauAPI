@@ -6,6 +6,8 @@ import com.example.officebureauapi.mappers.EntityToDtoMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.UUID;
+
 @Component
 @RequiredArgsConstructor
 public class UserEntityToDtoMapper implements EntityToDtoMapper<User, UserDto> {
@@ -14,15 +16,15 @@ public class UserEntityToDtoMapper implements EntityToDtoMapper<User, UserDto> {
         UserDto dto = new UserDto();
         dto.setId(entity.getId().toString());
         dto.setEmail(entity.getEmail());
-
         return dto;
     }
 
     @Override
     public User toEntity(UserDto dto, User entity) {
+        entity.setId(UUID.fromString(dto.getId()));
         entity.setEmail(dto.getEmail());
         entity.setPassword(dto.getPassword());
-        entity.setDeleted(dto.getIsDeleted());
+        entity.setDeleted(dto.isDeleted());
         return entity;
     }
 }

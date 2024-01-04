@@ -56,7 +56,7 @@ public class UserServiceImpl implements UserService {
 
         return existingUser.map(user -> {
             User updatedUser = User.builder()
-                    .isDeleted(userDto.getIsDeleted())
+                    .isDeleted(userDto.isDeleted())
                     .email(userDto.getEmail())
                     .password(userDto.getPassword())
                     .build();
