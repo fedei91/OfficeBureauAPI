@@ -8,8 +8,9 @@ import java.util.List;
 public interface UserService {
     UserDto register(UserDto userDto);
     void save(User user);
-    UserDto update(UserDto userDto);
+    UserDto update(String id, UserDto dto);
     void delete(String id);
+    User findById(String id);
     UserDto findUserById(String id);
     List<UserDto> findAll();
 }

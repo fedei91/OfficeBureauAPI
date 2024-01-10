@@ -45,36 +45,22 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto update(UserDto userDto) {
-        String userId = userDto.getId();
-        if (userId == null) {
-            throw new IllegalArgumentException("User id must not be null");
+    public UserDto update(String userId, UserDto updatedUser) {
+        User existingUser = findById(userId);
 
-        }
+        existingUser = userEntityToDtoMapper.toEntity(updatedUser, existingUser);
+        userRepository.save(existingUser);
 
-        Optional<User> existingUser = userRepository.findById(UUID.fromString(userId));
-
-        return existingUser.map(user -> {
-            User updatedUser = User.builder()
-                    .isDeleted(userDto.isDeleted())
-                    .email(userDto.getEmail())
-                    .password(userDto.getPassword())
-                    .build();
-
-                    return userEntityToDtoMapper.toDto(userRepository.saveAndFlush(updatedUser));
-        })
-                .orElseThrow( () -> new EntityNotFoundException(String.format("No user found with id %s", userId)));
+        return userEntityToDtoMapper.toDto(existingUser);
 
      }
 
     @Override
     public void delete(String id) {
-        userRepository.findById(UUID.fromString(id))
-                .map(user -> {
-                    user.setDeleted(true);
-                    return userRepository.saveAndFlush(user);
-                })
-                .orElseThrow( () -> new EntityNotFoundException(String.format("No user found with id %s", id)));
+        User existingUser = findById(id);
+
+        existingUser.setDeleted(true);
+        userRepository.save(existingUser);
     }
 
     @Override
@@ -90,6 +76,14 @@ public class UserServiceImpl implements UserService {
 
         return existingUser.map(userEntityToDtoMapper::toDto)
                 .orElseThrow( () -> new EntityNotFoundException(String.format("No user found with id %s", id)));
+    }
+
+    @Override
+    public User findById(String userId) {
+        UUID id = UUID.fromString(userId);
+
+        return userRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(String.format("User with id %s not found", userId)));
     }
 
     @Override

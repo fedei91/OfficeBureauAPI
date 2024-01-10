@@ -12,7 +12,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/users")
 @AllArgsConstructor
-@PreAuthorize("hasRole('USER')")
+@PreAuthorize("hasAnyRole('USER', 'ADMIN')")
 public class UserController {
 
     private final UserService userService;
@@ -27,7 +27,25 @@ public class UserController {
     public ResponseEntity<UserDto> getUserById(
             @PathVariable String id
     ) {
-        UserDto existingUser = userService.findUserById(id);
-        return ResponseEntity.ok(existingUser);
+        UserDto user = userService.findUserById(id);
+        return ResponseEntity.ok(user);
+    }
+
+    @PatchMapping("/update/{id}")
+    public ResponseEntity<?> updateUser(
+            @PathVariable String id,
+            @RequestBody UserDto userDto
+    ) {
+        userService.update(id, userDto);
+        return ResponseEntity.accepted().build();
+    }
+
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('admin:delete')")
+    public ResponseEntity<?> deleteUser(
+            @PathVariable String id
+    ) {
+        userService.delete(id);
+        return ResponseEntity.accepted().build();
     }
 }
