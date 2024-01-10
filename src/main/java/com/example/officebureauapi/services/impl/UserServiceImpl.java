@@ -9,6 +9,8 @@ import com.example.officebureauapi.repositories.UserRepository;
 import com.example.officebureauapi.services.UserService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -87,9 +89,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserDto> findAll() {
-        return userRepository.findAll()
-                .stream().map(user -> userEntityToDtoMapper.toDto(user))
-                .collect(Collectors.toList());
+    public Page<UserDto> findAll(Pageable pageable) {
+        return userRepository.findAll(pageable)
+                .map(user -> userEntityToDtoMapper.toDto(user));
     }
 }

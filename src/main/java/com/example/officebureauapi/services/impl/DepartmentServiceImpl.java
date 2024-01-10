@@ -8,6 +8,8 @@ import com.example.officebureauapi.repositories.DepartmentRepository;
 import com.example.officebureauapi.services.DepartmentService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -19,6 +21,12 @@ public class DepartmentServiceImpl implements DepartmentService {
 
     private final DepartmentRepository departmentRepository;
     private final DepartmentEntityToDtoMapper departmentEntityToDtoMapper;
+
+    @Override
+    public Page<DepartmentDto> findAll(Pageable pageable) {
+        return departmentRepository.findByIsDeletedIsFalse(pageable)
+                .map(departmentEntityToDtoMapper::toDto);
+    }
 
     @Override
     public Department findById(String departmentId) {

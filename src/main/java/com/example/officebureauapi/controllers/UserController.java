@@ -3,11 +3,11 @@ package com.example.officebureauapi.controllers;
 import com.example.officebureauapi.dto.UserDto;
 import com.example.officebureauapi.services.UserService;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/users")
@@ -19,8 +19,10 @@ public class UserController {
 
     @GetMapping
     @PreAuthorize("hasAuthority('admin:read')")
-    public ResponseEntity<List<UserDto>> findAllUsers() {
-        return ResponseEntity.ok(userService.findAll());
+    public ResponseEntity<Page<UserDto>> findAllUsers(
+            Pageable pageable
+    ) {
+        return ResponseEntity.ok(userService.findAll(pageable));
     }
 
     @GetMapping("/{id}")

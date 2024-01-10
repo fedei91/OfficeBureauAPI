@@ -2,8 +2,8 @@ package com.example.officebureauapi.services;
 
 import com.example.officebureauapi.dto.UserDto;
 import com.example.officebureauapi.entities.User;
-
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface UserService {
     UserDto register(UserDto userDto);
@@ -12,5 +12,5 @@ public interface UserService {
     void delete(String id);
     User findById(String id);
     UserDto findUserById(String id);
-    List<UserDto> findAll();
+    Page<UserDto> findAll(Pageable pageable);
 }
