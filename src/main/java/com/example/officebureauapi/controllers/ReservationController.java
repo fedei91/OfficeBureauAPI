@@ -3,22 +3,44 @@ package com.example.officebureauapi.controllers;
 import com.example.officebureauapi.dto.ReservationDto;
 import com.example.officebureauapi.services.ReservationService;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/reservations")
 @AllArgsConstructor
-//@PreAuthorize()
+@PreAuthorize("hasAnyRole('USER', 'ADMIN')")
 public class ReservationController {
 
     private final ReservationService reservationService;
 
     @GetMapping
-    public ResponseEntity<List<ReservationDto>> findAllReservations() {
-        return ResponseEntity.ok(reservationService.findAll());
+    @PreAuthorize("hasAuthority('admin:read')")
+    public ResponseEntity<Page<ReservationDto>> findAllReservations(
+            Pageable pageable
+    ) {
+        return ResponseEntity.ok(reservationService.findAll(pageable));
+    }
+
+    @GetMapping("/user/{id}")
+    public ResponseEntity<Page<ReservationDto>> findAllByUserId(
+            @PathVariable String id,
+            Pageable pageable
+    ) {
+        return ResponseEntity.ok(reservationService.findAllByUserId(UUID.fromString(id), pageable));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ReservationDto> getReservationById(
+            @PathVariable String id
+    ) {
+        ReservationDto reservation = reservationService.findReservationById(id);
+        return ResponseEntity.ok(reservation);
     }
 
     @PostMapping("/create")
@@ -39,6 +61,7 @@ public class ReservationController {
     }
 
     @DeleteMapping("/delete/{id}")
+    @PreAuthorize("hasAuthority('admin::delete')")
     public ResponseEntity<?> deleteReservation(
             @PathVariable String id
     ) {

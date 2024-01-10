@@ -2,16 +2,18 @@ package com.example.officebureauapi.services.impl;
 
 import com.example.officebureauapi.dto.ReservationDto;
 import com.example.officebureauapi.entities.Reservation;
+import com.example.officebureauapi.exceptions.InvalidIdException;
 import com.example.officebureauapi.mappers.entitytodto.ReservationEntityToDtoMapper;
 import com.example.officebureauapi.repositories.ReservationRepository;
 import com.example.officebureauapi.services.ReservationService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -21,11 +23,15 @@ public class ReservationServiceImpl implements ReservationService {
     private final ReservationEntityToDtoMapper reservationEntityToDtoMapper;
 
     @Override
-    public List<ReservationDto> findAll() {
-        return reservationRepository.findAll()
-                .stream()
-                .map(reservation -> reservationEntityToDtoMapper.toDto(reservation))
-                .collect(Collectors.toList());
+    public Page<ReservationDto> findAll(Pageable pageable) {
+        return reservationRepository.findByIsDeletedIsFalse(pageable)
+                .map(reservationEntityToDtoMapper::toDto);
+    }
+
+    @Override
+    public Page<ReservationDto> findAllByUserId(UUID userId, Pageable pageable) {
+        return reservationRepository.findByCreatedBy(userId, pageable)
+                .map(reservationEntityToDtoMapper::toDto);
     }
 
     @Override
@@ -61,5 +67,20 @@ public class ReservationServiceImpl implements ReservationService {
         return reservationRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(String.format("Reservation with id %s not found", reservationId)));
 
+    }
+
+    @Override
+    public ReservationDto findReservationById(String id) {
+        UUID reservationId;
+        try {
+            reservationId = UUID.fromString(id);
+        } catch (IllegalArgumentException ex) {
+            throw new InvalidIdException("Invalid reservation id format", ex);
+        }
+
+        Optional<Reservation> existingReservation = reservationRepository.findById(reservationId);
+
+        return existingReservation.map(reservationEntityToDtoMapper::toDto)
+                .orElseThrow( () -> new EntityNotFoundException(String.format("No reservation found with id %s", id)));
     }
 }
