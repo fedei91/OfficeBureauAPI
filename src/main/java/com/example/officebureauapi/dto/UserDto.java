@@ -2,6 +2,8 @@ package com.example.officebureauapi.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import lombok.extern.jackson.Jacksonized;
 
@@ -15,6 +17,8 @@ import lombok.extern.jackson.Jacksonized;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class UserDto {
     String id;
+    @NotBlank(message = "Email cannot be blank")
+    @Email(message = "Invalid email format")
     String email;
     String password;
     boolean isDeleted;

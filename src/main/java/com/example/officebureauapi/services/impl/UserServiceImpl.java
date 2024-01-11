@@ -29,9 +29,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto register(UserDto userDto) {
-        if (userRepository.findByEmail(userDto.getEmail()).isPresent()) {
-            throw new DuplicateEmailException("Email already registered: " + userDto.getEmail());
-        }
+        verifyUserEmail(userDto);
+
         User user = User.builder().build();
         user = userEntityToDtoMapper.toEntity(userDto, user);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
@@ -47,7 +46,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto update(String userId, UserDto updatedUser) {
+    public UserDto update(String userId, UserDto updatedUserDto) {
+        verifyUserEmail(updatedUserDto);
+
         User existingUser = findById(userId);
 
         existingUser = userEntityToDtoMapper.toEntity(updatedUser, existingUser);
@@ -91,6 +92,12 @@ public class UserServiceImpl implements UserService {
     @Override
     public Page<UserDto> findAll(Pageable pageable) {
         return userRepository.findAll(pageable)
-                .map(user -> userEntityToDtoMapper.toDto(user));
+                .map(user -> userMapper.toDto(user, UserDto.builder().build()));
+    }
+
+    private void verifyUserEmail(UserDto userDto) {
+        if (userRepository.findByEmail(userDto.getEmail()).isPresent()) {
+            throw new DuplicateEmailException("Email already registered: " + userDto.getEmail());
+        }
     }
 }
