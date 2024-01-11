@@ -3,7 +3,7 @@ package com.example.officebureauapi.services.impl;
 import com.example.officebureauapi.dto.DepartmentDto;
 import com.example.officebureauapi.entities.Department;
 import com.example.officebureauapi.exceptions.InvalidIdException;
-import com.example.officebureauapi.mappers.entitytodto.DepartmentEntityToDtoMapper;
+import com.example.officebureauapi.mappers.DepartmentMapper;
 import com.example.officebureauapi.repositories.DepartmentRepository;
 import com.example.officebureauapi.services.DepartmentService;
 import jakarta.persistence.EntityNotFoundException;
@@ -12,7 +12,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -20,12 +19,12 @@ import java.util.UUID;
 public class DepartmentServiceImpl implements DepartmentService {
 
     private final DepartmentRepository departmentRepository;
-    private final DepartmentEntityToDtoMapper departmentEntityToDtoMapper;
+    private final DepartmentMapper departmentMapper;
 
     @Override
     public Page<DepartmentDto> findAll(Pageable pageable) {
         return departmentRepository.findByIsDeletedIsFalse(pageable)
-                .map(departmentEntityToDtoMapper::toDto);
+                .map(department -> departmentMapper.toDto(department, DepartmentDto.builder().build()));
     }
 
     @Override
@@ -45,26 +44,25 @@ public class DepartmentServiceImpl implements DepartmentService {
             throw new InvalidIdException("Invalid department id format", ex);
         }
 
-        Optional<Department> existingDepartment = departmentRepository.findById(departmentId);
-
-        return existingDepartment.map(departmentEntityToDtoMapper::toDto)
+        return departmentRepository.findById(departmentId)
+                .map(department -> departmentMapper.toDto(department, DepartmentDto.builder().build()))
                 .orElseThrow(() -> new EntityNotFoundException(String.format("No department found with id %s", id)));
     }
 
     @Override
     public void save(DepartmentDto departmentDto) {
         Department department = Department.builder().build();
-        department = departmentEntityToDtoMapper.toEntity(departmentDto, department);
+        department = departmentMapper.toEntity(departmentDto, department);
         departmentRepository.save(department);
     }
 
     @Override
-    public DepartmentDto update(String departmentId, DepartmentDto updatedDto) {
+    public DepartmentDto update(String departmentId, DepartmentDto updatedDepartmentDto) {
         Department existingDepartment = findById(departmentId);
-        existingDepartment = departmentEntityToDtoMapper.toEntity(updatedDto, existingDepartment);
+        existingDepartment = departmentMapper.toEntity(updatedDepartmentDto, existingDepartment);
         departmentRepository.save(existingDepartment);
 
-        return departmentEntityToDtoMapper.toDto(existingDepartment);
+        return departmentMapper.toDto(existingDepartment, updatedDepartmentDto);
     }
 
     @Override

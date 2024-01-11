@@ -4,7 +4,7 @@ import com.example.officebureauapi.dto.UserDto;
 import com.example.officebureauapi.entities.User;
 import com.example.officebureauapi.exceptions.DuplicateEmailException;
 import com.example.officebureauapi.exceptions.InvalidIdException;
-import com.example.officebureauapi.mappers.entitytodto.UserEntityToDtoMapper;
+import com.example.officebureauapi.mappers.UserMapper;
 import com.example.officebureauapi.repositories.UserRepository;
 import com.example.officebureauapi.services.UserService;
 import jakarta.persistence.EntityNotFoundException;
@@ -14,10 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -25,14 +22,14 @@ public class UserServiceImpl implements UserService {
 
     private final BCryptPasswordEncoder passwordEncoder;
     private UserRepository userRepository;
-    private UserEntityToDtoMapper userEntityToDtoMapper;
+    private UserMapper userMapper;
 
     @Override
     public UserDto register(UserDto userDto) {
         verifyUserEmail(userDto);
 
         User user = User.builder().build();
-        user = userEntityToDtoMapper.toEntity(userDto, user);
+        user = userMapper.toEntity(userDto, user);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
         userRepository.saveAndFlush(user);
@@ -51,10 +48,10 @@ public class UserServiceImpl implements UserService {
 
         User existingUser = findById(userId);
 
-        existingUser = userEntityToDtoMapper.toEntity(updatedUser, existingUser);
+        existingUser = userMapper.toEntity(updatedUserDto, existingUser);
         userRepository.save(existingUser);
 
-        return userEntityToDtoMapper.toDto(existingUser);
+        return userMapper.toDto(existingUser, updatedUserDto);
 
      }
 
@@ -75,9 +72,8 @@ public class UserServiceImpl implements UserService {
             throw new InvalidIdException("Invalid user id format", ex);
         }
 
-        Optional<User> existingUser = userRepository.findById(userId);
-
-        return existingUser.map(userEntityToDtoMapper::toDto)
+        return userRepository.findById(userId)
+                .map(user -> userMapper.toDto(user, UserDto.builder().build()))
                 .orElseThrow( () -> new EntityNotFoundException(String.format("No user found with id %s", id)));
     }
 

@@ -3,7 +3,7 @@ package com.example.officebureauapi.services.impl;
 import com.example.officebureauapi.dto.ReservationDto;
 import com.example.officebureauapi.entities.Reservation;
 import com.example.officebureauapi.exceptions.InvalidIdException;
-import com.example.officebureauapi.mappers.entitytodto.ReservationEntityToDtoMapper;
+import com.example.officebureauapi.mappers.ReservationMapper;
 import com.example.officebureauapi.repositories.ReservationRepository;
 import com.example.officebureauapi.services.ReservationService;
 import jakarta.persistence.EntityNotFoundException;
@@ -12,7 +12,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -20,25 +19,23 @@ import java.util.UUID;
 public class ReservationServiceImpl implements ReservationService {
 
     private final ReservationRepository reservationRepository;
-    private final ReservationEntityToDtoMapper reservationEntityToDtoMapper;
+    private final ReservationMapper reservationMapper;
 
     @Override
     public Page<ReservationDto> findAll(Pageable pageable) {
         return reservationRepository.findByIsDeletedIsFalse(pageable)
-                .map(reservationEntityToDtoMapper::toDto);
+                .map(reservation -> reservationMapper.toDto(reservation, ReservationDto.builder().build()));
     }
 
     @Override
     public Page<ReservationDto> findAllByUserId(UUID userId, Pageable pageable) {
         return reservationRepository.findByCreatedBy(userId, pageable)
-                .map(reservationEntityToDtoMapper::toDto);
+                .map(reservation -> reservationMapper.toDto(reservation, ReservationDto.builder().build()));
     }
 
     @Override
     public void save(ReservationDto reservationDto) {
-        Reservation reservation = Reservation.builder().build();
-        reservation = reservationEntityToDtoMapper.toEntity(reservationDto, reservation);
-
+        Reservation reservation = reservationMapper.toEntity(reservationDto, Reservation.builder().build());
         reservationRepository.save(reservation);
     }
 
@@ -46,10 +43,10 @@ public class ReservationServiceImpl implements ReservationService {
     public ReservationDto update(String reservationId, ReservationDto updatedDto) {
         Reservation existingReservation = findById(reservationId);
 
-        existingReservation = reservationEntityToDtoMapper.toEntity(updatedDto, existingReservation);
+        reservationMapper.toEntity(updatedDto, existingReservation);
         reservationRepository.save(existingReservation);
 
-        return reservationEntityToDtoMapper.toDto(existingReservation);
+        return reservationMapper.toDto(existingReservation, updatedDto);
     }
 
     @Override
@@ -78,9 +75,8 @@ public class ReservationServiceImpl implements ReservationService {
             throw new InvalidIdException("Invalid reservation id format", ex);
         }
 
-        Optional<Reservation> existingReservation = reservationRepository.findById(reservationId);
-
-        return existingReservation.map(reservationEntityToDtoMapper::toDto)
+        return reservationRepository.findById(reservationId)
+                .map(reservation -> reservationMapper.toDto(reservation, ReservationDto.builder().build()))
                 .orElseThrow( () -> new EntityNotFoundException(String.format("No reservation found with id %s", id)));
     }
 }
