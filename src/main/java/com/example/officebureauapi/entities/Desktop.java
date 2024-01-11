@@ -6,8 +6,8 @@ import org.hibernate.annotations.UuidGenerator;
 
 import java.util.UUID;
 
-@Data
-@EqualsAndHashCode(of = {"id"})
+@Getter
+@Setter
 @Builder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
@@ -22,7 +22,8 @@ public class Desktop {
     @Column(name = "department_id")
     private String departmentId;
 
-    @Column(name = "is_deleted", columnDefinition = "boolean default false", nullable = false)
+    @Column(name = "is_deleted", nullable = false)
+    @Builder.Default
     private boolean isDeleted = false;
 
 }

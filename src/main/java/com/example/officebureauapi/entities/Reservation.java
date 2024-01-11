@@ -46,7 +46,8 @@ public class Reservation {
     @Column(insertable = false)
     private UUID lastModifiedBy;
 
-    @Column(name = "is_deleted", columnDefinition = "boolean default false", nullable = false)
+    @Column(name = "is_deleted", nullable = false)
+    @Builder.Default
     private boolean isDeleted = false;
 
 }

@@ -42,7 +42,7 @@ public class User implements UserDetails {
     private String password;
 
     @Builder.Default
-    @Column(name = "is_deleted", columnDefinition = "boolean default false", nullable = false)
+    @Column(name = "is_deleted", nullable = false)
     private boolean isDeleted = false;
 
     @Enumerated(EnumType.STRING)
