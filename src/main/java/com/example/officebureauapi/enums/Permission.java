@@ -13,7 +13,19 @@ public enum Permission {
     MANAGER_READ("management:read"),
     MANAGER_UPDATE("management:update"),
     MANAGER_CREATE("management:create"),
-    MANAGER_DELETE("management:delete")
+    MANAGER_DELETE("management:delete"),
+    USER_READ("user:read"),
+    USER_UPDATE("user:update"),
+    USER_CREATE("user:create"),
+    USER_DELETE("user:delete"),
+    RESERVATION_READ("reservation:read"),
+    RESERVATION_UPDATE("reservation:update"),
+    RESERVATION_CREATE("reservation:create"),
+    RESERVATION_DELETE("reservation:delete"),
+    DEPARTMENT_READ("department:read"),
+    DEPARTMENT_UPDATE("department:update"),
+    DEPARTMENT_CREATE("department:create"),
+    DEPARTMENT_DELETE("department:delete"),
 
     ;
 

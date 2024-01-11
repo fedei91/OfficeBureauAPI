@@ -18,7 +18,7 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping
-    @PreAuthorize("hasAuthority('admin:read')")
+    @PreAuthorize("hasAuthority('user:read')")
     public ResponseEntity<Page<UserDto>> findAllUsers(
             Pageable pageable
     ) {
@@ -26,6 +26,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('user:read')")
     public ResponseEntity<UserDto> getUserById(
             @PathVariable String id
     ) {
@@ -34,6 +35,7 @@ public class UserController {
     }
 
     @PatchMapping("/update/{id}")
+    @PreAuthorize("hasAuthority('user:update')")
     public ResponseEntity<?> updateUser(
             @PathVariable String id,
             @RequestBody UserDto userDto
@@ -43,7 +45,7 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAuthority('admin:delete')")
+    @PreAuthorize("hasAuthority('user:delete')")
     public ResponseEntity<?> deleteUser(
             @PathVariable String id
     ) {

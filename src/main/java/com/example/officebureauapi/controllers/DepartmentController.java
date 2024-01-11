@@ -12,19 +12,19 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/v1/departments")
 @AllArgsConstructor
-@PreAuthorize("hasAnyRole('USER', 'ADMIN')")
 public class DepartmentController {
 
     private final DepartmentService departmentService;
 
     @GetMapping
-    @PreAuthorize("hasAuthority('admin:read')")
+    @PreAuthorize("hasAuthority('department:read')")
     public ResponseEntity<Page<DepartmentDto>> findAllDepartments(
             Pageable pageable
     ) {
         return ResponseEntity.ok(departmentService.findAll(pageable));
     }
     @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('department:read')")
     public ResponseEntity<DepartmentDto> getDepartmentById(
             @PathVariable String id
     ) {
@@ -33,6 +33,7 @@ public class DepartmentController {
     }
 
     @PostMapping("/create")
+    @PreAuthorize("hasAuthority('department:create')")
     public ResponseEntity<?> createDepartment(
             @RequestBody DepartmentDto departmentDto
     ) {
@@ -41,7 +42,7 @@ public class DepartmentController {
     }
 
     @PatchMapping("/update/{id}")
-    @PreAuthorize("hasAuthority('admin::update')")
+    @PreAuthorize("hasAuthority('department::update')")
     public ResponseEntity<?> updateDepartment(
         @PathVariable String id,
         @RequestBody DepartmentDto updatedDepartment
@@ -51,7 +52,7 @@ public class DepartmentController {
     }
 
     @DeleteMapping("/delete/{id}")
-    @PreAuthorize("hasAuthority('admin::delete')")
+    @PreAuthorize("hasAuthority('department::delete')")
     public ResponseEntity<?> deleteDepartment(
         @PathVariable String id
     ) {

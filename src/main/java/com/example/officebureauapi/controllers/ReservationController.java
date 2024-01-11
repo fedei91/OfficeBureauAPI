@@ -14,13 +14,12 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/v1/reservations")
 @AllArgsConstructor
-@PreAuthorize("hasAnyRole('USER', 'ADMIN')")
 public class ReservationController {
 
     private final ReservationService reservationService;
 
     @GetMapping
-    @PreAuthorize("hasAuthority('admin:read')")
+    @PreAuthorize("hasAuthority('reservation:read')")
     public ResponseEntity<Page<ReservationDto>> findAllReservations(
             Pageable pageable
     ) {
@@ -28,6 +27,7 @@ public class ReservationController {
     }
 
     @GetMapping("/user/{id}")
+    @PreAuthorize("hasAuthority('reservation:read')")
     public ResponseEntity<Page<ReservationDto>> findAllByUserId(
             @PathVariable String id,
             Pageable pageable
@@ -36,6 +36,7 @@ public class ReservationController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('reservation:read')")
     public ResponseEntity<ReservationDto> getReservationById(
             @PathVariable String id
     ) {
@@ -44,6 +45,7 @@ public class ReservationController {
     }
 
     @PostMapping("/create")
+    @PreAuthorize("hasAuthority('reservation:create')")
     public ResponseEntity<?> makeReservation(
             @RequestBody ReservationDto reservationDto
             ) {
@@ -52,6 +54,7 @@ public class ReservationController {
     }
 
     @PatchMapping("/update/{id}")
+    @PreAuthorize("hasAuthority('reservation:update')")
     public ResponseEntity<?> updateReservation(
             @PathVariable String id,
             @RequestBody ReservationDto updatedReservation
@@ -61,7 +64,7 @@ public class ReservationController {
     }
 
     @DeleteMapping("/delete/{id}")
-    @PreAuthorize("hasAuthority('admin::delete')")
+    @PreAuthorize("hasAuthority('reservation::delete')")
     public ResponseEntity<?> deleteReservation(
             @PathVariable String id
     ) {
