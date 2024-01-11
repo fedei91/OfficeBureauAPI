@@ -19,6 +19,10 @@ import java.util.UUID;
 @Service
 @AllArgsConstructor
 public class UserServiceImpl implements UserService {
+    private static final String NOT_FOUND = "User.NotFound";
+    private static final String USER_ID_NOT_FOUND = "User.Id.NotFound";
+    private static final String INVALID_USER_ID_FORMAT = "User.Id.InvalidFormat";
+    private static final String EMAIL_ALREADY_REGISTERED = "User.Email.Exists";
 
     private final BCryptPasswordEncoder passwordEncoder;
     private UserRepository userRepository;
@@ -69,12 +73,12 @@ public class UserServiceImpl implements UserService {
         try {
             userId = UUID.fromString(id);
         } catch (IllegalArgumentException ex) {
-            throw new InvalidIdException("Invalid user id format", ex);
+            throw new InvalidIdException(INVALID_USER_ID_FORMAT, ex);
         }
 
         return userRepository.findById(userId)
                 .map(user -> userMapper.toDto(user, UserDto.builder().build()))
-                .orElseThrow( () -> new EntityNotFoundException(String.format("No user found with id %s", id)));
+                .orElseThrow( () -> new EntityNotFoundException(String.format(NOT_FOUND, id)));
     }
 
     @Override
@@ -82,7 +86,7 @@ public class UserServiceImpl implements UserService {
         UUID id = UUID.fromString(userId);
 
         return userRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(String.format("User with id %s not found", userId)));
+                .orElseThrow(() -> new EntityNotFoundException(String.format(NOT_FOUND, userId)));
     }
 
     @Override
@@ -93,7 +97,7 @@ public class UserServiceImpl implements UserService {
 
     private void verifyUserEmail(UserDto userDto) {
         if (userRepository.findByEmail(userDto.getEmail()).isPresent()) {
-            throw new DuplicateEmailException("Email already registered: " + userDto.getEmail());
+            throw new DuplicateEmailException(EMAIL_ALREADY_REGISTERED + userDto.getEmail());
         }
     }
 }

@@ -17,6 +17,10 @@ import java.util.UUID;
 @Service
 @AllArgsConstructor
 public class ReservationServiceImpl implements ReservationService {
+    private static final String NOT_FOUND = "Reservation.NotFound";
+    private static final String RESERVATION_ID_NOT_FOUND = "Reservation.Id.NotFound";
+    private static final String INVALID_RESERVATION_ID_FORMAT = "Reservation.Id.InvalidFormat";
+    private static final String RESERVATION_EXISTS = "Reservation.Exists";
 
     private final ReservationRepository reservationRepository;
     private final ReservationMapper reservationMapper;
@@ -62,7 +66,7 @@ public class ReservationServiceImpl implements ReservationService {
         UUID id = UUID.fromString(reservationId);
 
         return reservationRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(String.format("Reservation with id %s not found", reservationId)));
+                .orElseThrow(() -> new EntityNotFoundException(String.format(NOT_FOUND, reservationId)));
 
     }
 
@@ -72,11 +76,11 @@ public class ReservationServiceImpl implements ReservationService {
         try {
             reservationId = UUID.fromString(id);
         } catch (IllegalArgumentException ex) {
-            throw new InvalidIdException("Invalid reservation id format", ex);
+            throw new InvalidIdException(INVALID_RESERVATION_ID_FORMAT, ex);
         }
 
         return reservationRepository.findById(reservationId)
                 .map(reservation -> reservationMapper.toDto(reservation, ReservationDto.builder().build()))
-                .orElseThrow( () -> new EntityNotFoundException(String.format("No reservation found with id %s", id)));
+                .orElseThrow( () -> new EntityNotFoundException(String.format(NOT_FOUND, id)));
     }
 }

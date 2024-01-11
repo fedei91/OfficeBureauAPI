@@ -17,6 +17,10 @@ import java.util.UUID;
 @Service
 @AllArgsConstructor
 public class DepartmentServiceImpl implements DepartmentService {
+    private static final String NOT_FOUND = "Department.NotFound";
+    private static final String DEPARTMENT_ID_NOT_FOUND = "Department.Id.NotFound";
+    private static final String INVALID_DEPARTMENT_ID_FORMAT = "Department.Id.InvalidFormat";
+    private static final String DEPARTMENT_EXISTS = "Department.Exists";
 
     private final DepartmentRepository departmentRepository;
     private final DepartmentMapper departmentMapper;
@@ -32,7 +36,7 @@ public class DepartmentServiceImpl implements DepartmentService {
         UUID id = UUID.fromString(departmentId);
 
         return departmentRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(String.format("Department with id %s not found", departmentId)));
+                .orElseThrow(() -> new EntityNotFoundException(String.format(NOT_FOUND, departmentId)));
     }
 
     @Override
@@ -41,12 +45,12 @@ public class DepartmentServiceImpl implements DepartmentService {
         try {
             departmentId = UUID.fromString(id);
         } catch (IllegalArgumentException ex) {
-            throw new InvalidIdException("Invalid department id format", ex);
+            throw new InvalidIdException(INVALID_DEPARTMENT_ID_FORMAT, ex);
         }
 
         return departmentRepository.findById(departmentId)
                 .map(department -> departmentMapper.toDto(department, DepartmentDto.builder().build()))
-                .orElseThrow(() -> new EntityNotFoundException(String.format("No department found with id %s", id)));
+                .orElseThrow(() -> new EntityNotFoundException(String.format(NOT_FOUND, id)));
     }
 
     @Override
