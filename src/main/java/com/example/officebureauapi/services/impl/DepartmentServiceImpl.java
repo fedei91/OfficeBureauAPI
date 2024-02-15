@@ -6,6 +6,7 @@ import com.example.officebureauapi.exceptions.InvalidIdException;
 import com.example.officebureauapi.mappers.DepartmentMapper;
 import com.example.officebureauapi.repositories.DepartmentRepository;
 import com.example.officebureauapi.services.DepartmentService;
+import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -53,9 +54,20 @@ public class DepartmentServiceImpl implements DepartmentService {
                 .orElseThrow(() -> new EntityNotFoundException(String.format(NOT_FOUND, id)));
     }
 
+    public Department getDepartmentById(UUID departmentId) {
+        return departmentRepository.findById(departmentId)
+                .orElseThrow(() -> new EntityNotFoundException(String.format(NOT_FOUND, departmentId)));
+    }
+
     @Override
     public void save(DepartmentDto departmentDto) {
         Department department = Department.builder().build();
+
+        boolean departmentExists = departmentRepository.existsById(department.getId());
+        if (departmentExists) {
+            throw new EntityExistsException(String.format(DEPARTMENT_EXISTS, department.getId()));
+        }
+
         department = departmentMapper.toEntity(departmentDto, department);
         departmentRepository.save(department);
     }

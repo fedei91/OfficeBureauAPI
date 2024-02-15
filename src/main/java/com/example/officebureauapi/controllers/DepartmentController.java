@@ -2,6 +2,7 @@ package com.example.officebureauapi.controllers;
 
 import com.example.officebureauapi.dto.DepartmentDto;
 import com.example.officebureauapi.services.DepartmentService;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -35,7 +36,7 @@ public class DepartmentController {
     @PostMapping("/create")
     @PreAuthorize("hasAuthority('department:create')")
     public ResponseEntity<?> createDepartment(
-            @RequestBody DepartmentDto departmentDto
+            @RequestBody @Valid DepartmentDto departmentDto
     ) {
         departmentService.save(departmentDto);
         return ResponseEntity.accepted().build();
@@ -45,7 +46,7 @@ public class DepartmentController {
     @PreAuthorize("hasAuthority('department::update')")
     public ResponseEntity<?> updateDepartment(
         @PathVariable String id,
-        @RequestBody DepartmentDto updatedDepartment
+        @RequestBody @Valid DepartmentDto updatedDepartment
     ) {
         departmentService.update(id, updatedDepartment);
         return ResponseEntity.accepted().build();
