@@ -9,19 +9,19 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static com.example.officebureauapi.enums.Permission.ADMIN_CREATE;
-import static com.example.officebureauapi.enums.Permission.ADMIN_DELETE;
-import static com.example.officebureauapi.enums.Permission.ADMIN_READ;
-import static com.example.officebureauapi.enums.Permission.ADMIN_UPDATE;
-import static com.example.officebureauapi.enums.Permission.MANAGER_CREATE;
-import static com.example.officebureauapi.enums.Permission.MANAGER_DELETE;
-import static com.example.officebureauapi.enums.Permission.MANAGER_READ;
-import static com.example.officebureauapi.enums.Permission.MANAGER_UPDATE;
+import static com.example.officebureauapi.enums.Permission.*;
 
 
 @RequiredArgsConstructor
 public enum Role {
-    USER(Collections.emptySet()),
+    USER(
+            Set.of(
+                    USER_READ,
+                    RESERVATION_CREATE,
+                    DEPARTMENT_READ,
+                    DESKTOP_READ
+            )
+    ),
     ADMIN(
             Set.of(
                     ADMIN_READ,
@@ -31,15 +31,44 @@ public enum Role {
                     MANAGER_READ,
                     MANAGER_UPDATE,
                     MANAGER_DELETE,
-                    MANAGER_CREATE
+                    MANAGER_CREATE,
+                    USER_READ,
+                    USER_UPDATE,
+                    USER_DELETE,
+                    USER_CREATE,
+                    RESERVATION_READ,
+                    RESERVATION_UPDATE,
+                    RESERVATION_DELETE,
+                    RESERVATION_CREATE,
+                    DEPARTMENT_READ,
+                    DEPARTMENT_UPDATE,
+                    DEPARTMENT_DELETE,
+                    DEPARTMENT_CREATE,
+                    DESKTOP_READ,
+                    DESKTOP_UPDATE,
+                    DESKTOP_DELETE,
+                    DESKTOP_CREATE
             )
     ),
     MANAGER(
             Set.of(
                     MANAGER_READ,
-                    MANAGER_UPDATE,
-                    MANAGER_DELETE,
-                    MANAGER_CREATE
+                    MANAGER_CREATE,
+                    USER_READ,
+                    USER_UPDATE,
+                    USER_CREATE,
+                    RESERVATION_READ,
+                    RESERVATION_UPDATE,
+                    RESERVATION_DELETE,
+                    RESERVATION_CREATE,
+                    DEPARTMENT_READ,
+                    DEPARTMENT_UPDATE,
+                    DEPARTMENT_DELETE,
+                    DEPARTMENT_CREATE,
+                    DESKTOP_READ,
+                    DESKTOP_UPDATE,
+                    DESKTOP_DELETE,
+                    DESKTOP_CREATE
             )
     )
 

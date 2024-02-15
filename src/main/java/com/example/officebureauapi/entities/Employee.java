@@ -8,8 +8,8 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-@Data
-@EqualsAndHashCode(of = {"id"})
+@Getter
+@Setter
 @Builder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
@@ -30,8 +30,10 @@ public class Employee {
     private String supervisorId;
 
     @OneToMany(mappedBy = "supervisorId", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @Builder.Default
     private Set<Employee> employeesInCharge = new HashSet<>();
 
-    @Column(name = "is_deleted", columnDefinition = "boolean default false", nullable = false)
+    @Column(name = "is_deleted", nullable = false)
+    @Builder.Default
     private boolean isDeleted = false;
 }

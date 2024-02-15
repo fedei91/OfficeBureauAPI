@@ -1,4 +1,4 @@
-package com.example.officebureauapi.mappers;
+package com.example.officebureauapi.mappers.entitytodto;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;

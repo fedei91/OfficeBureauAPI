@@ -4,17 +4,19 @@ import com.example.officebureauapi.config.JwtService;
 import com.example.officebureauapi.dto.AuthenticationResponseDto;
 import com.example.officebureauapi.dto.RegisterRequestDto;
 import com.example.officebureauapi.entities.Token;
+import com.example.officebureauapi.exceptions.DuplicateEmailException;
 import com.example.officebureauapi.repositories.TokenRepository;
 import com.example.officebureauapi.enums.TokenType;
 import com.example.officebureauapi.dto.AuthenticationRequestDto;
 import com.example.officebureauapi.entities.User;
 import com.example.officebureauapi.repositories.UserRepository;
+import com.example.officebureauapi.repositories.specifications.TokenSpecifications;
 import com.example.officebureauapi.services.AuthenticationService;
-import com.example.officebureauapi.services.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -22,6 +24,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -35,6 +39,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public AuthenticationResponseDto register(RegisterRequestDto request) {
+        verifyUserEmail(request.getEmail());
         var user = User.builder()
                 .firstName(request.getFirstName())
                 .lastName(request.getLastName())
@@ -110,7 +115,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     private void revokeAllUserTokens(User user) {
-        var validUserTokens = tokenRepository.findAllValidTokenByUser(user.getId());
+        var validUserTokens = findAllValidTokensByUser(user.getId());
         if (validUserTokens.isEmpty())
             return;
         validUserTokens.forEach(token -> {
@@ -118,5 +123,16 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             token.setRevoked(true);
         });
         tokenRepository.saveAll(validUserTokens);
+    }
+
+    public List<Token> findAllValidTokensByUser(UUID userId) {
+        Specification<Token> specification = TokenSpecifications.validTokensByUser(userId);
+        return tokenRepository.findAll(specification);
+    }
+
+    private void verifyUserEmail(String userEmail) {
+        if (userRepository.findByEmail(userEmail).isPresent()) {
+            throw new DuplicateEmailException("Email already registered: " + userEmail);
+        }
     }
 }
