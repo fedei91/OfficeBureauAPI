@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = "com.example.officebureauapi")
 @EnableJpaAuditing(auditorAwareRef = "auditorAware")
 public class OfficeBureauApiApplication {
 
