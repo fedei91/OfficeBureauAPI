@@ -2,6 +2,7 @@ package com.example.officebureauapi.controllers;
 
 import com.example.officebureauapi.dto.DesktopDto;
 import com.example.officebureauapi.services.DesktopService;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -37,7 +38,7 @@ public class DesktopController {
     @PostMapping("/create")
     @PreAuthorize("hasAuthority('desktop:create')")
     public ResponseEntity<?> createDesktop(
-            @RequestBody DesktopDto desktopDto
+            @RequestBody @Valid DesktopDto desktopDto
     ) {
         desktopService.save(desktopDto);
         return ResponseEntity.accepted().build();
@@ -47,7 +48,7 @@ public class DesktopController {
     @PreAuthorize("hasAuthority('desktop::update')")
     public ResponseEntity<?> updateDesktop(
             @PathVariable String id,
-            @RequestBody DesktopDto updatedDesktop
+            @RequestBody @Valid DesktopDto updatedDesktop
     ) {
         desktopService.update(id, updatedDesktop);
         return ResponseEntity.accepted().build();

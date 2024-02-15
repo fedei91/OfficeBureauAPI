@@ -32,7 +32,7 @@ public class DesktopDto {
     @NotNull(message = "Desktop must belong to a department")
     UUID departmentId;
 
-    boolean isReserved;
+    boolean isDeleted;
 
     public void setTotalChairs() {
         this.totalChairs = this.desktopType.getCapacity();

@@ -21,6 +21,7 @@ import java.util.UUID;
 public class ReservationDto {
     UUID id;
     String employeeId;
+    @NotNull(message = "Reservation must have an assigned desktop")
     UUID desktopId;
 
     @Positive(message = "Booked chairs must be a positive value")
@@ -46,8 +47,4 @@ public class ReservationDto {
     UUID lastModifiedBy;
     boolean isDeleted;
 
-    @AssertTrue(message = "Start time must be previous to end time")
-    private boolean isValidDataRange() {
-        return startTstamp != null && endTstamp != null && startTstamp.isBefore(endTstamp);
-    }
 }

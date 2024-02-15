@@ -2,6 +2,7 @@ package com.example.officebureauapi.controllers;
 
 import com.example.officebureauapi.dto.ReservationDto;
 import com.example.officebureauapi.services.ReservationService;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -47,7 +48,7 @@ public class ReservationController {
     @PostMapping("/create")
     @PreAuthorize("hasAuthority('reservation:create')")
     public ResponseEntity<?> makeReservation(
-            @RequestBody ReservationDto reservationDto
+            @RequestBody @Valid ReservationDto reservationDto
             ) {
         reservationService.save(reservationDto);
         return ResponseEntity.accepted().build();
@@ -57,7 +58,7 @@ public class ReservationController {
     @PreAuthorize("hasAuthority('reservation:update')")
     public ResponseEntity<?> updateReservation(
             @PathVariable String id,
-            @RequestBody ReservationDto updatedReservation
+            @RequestBody @Valid ReservationDto updatedReservation
     ) {
         reservationService.update(id, updatedReservation);
         return ResponseEntity.accepted().build();
