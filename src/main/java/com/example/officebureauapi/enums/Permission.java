@@ -26,6 +26,10 @@ public enum Permission {
     DEPARTMENT_UPDATE("department:update"),
     DEPARTMENT_CREATE("department:create"),
     DEPARTMENT_DELETE("department:delete"),
+    DESKTOP_READ("desktop:read"),
+    DESKTOP_UPDATE("desktop:update"),
+    DESKTOP_DELETE("desktop:create"),
+    DESKTOP_CREATE("desktop:delete")
 
     ;
 

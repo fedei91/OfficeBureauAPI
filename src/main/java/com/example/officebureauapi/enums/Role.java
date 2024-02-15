@@ -18,7 +18,8 @@ public enum Role {
             Set.of(
                     USER_READ,
                     RESERVATION_CREATE,
-                    DEPARTMENT_READ
+                    DEPARTMENT_READ,
+                    DESKTOP_READ
             )
     ),
     ADMIN(
@@ -42,7 +43,11 @@ public enum Role {
                     DEPARTMENT_READ,
                     DEPARTMENT_UPDATE,
                     DEPARTMENT_DELETE,
-                    DEPARTMENT_CREATE
+                    DEPARTMENT_CREATE,
+                    DESKTOP_READ,
+                    DESKTOP_UPDATE,
+                    DESKTOP_DELETE,
+                    DESKTOP_CREATE
             )
     ),
     MANAGER(
@@ -59,7 +64,11 @@ public enum Role {
                     DEPARTMENT_READ,
                     DEPARTMENT_UPDATE,
                     DEPARTMENT_DELETE,
-                    DEPARTMENT_CREATE
+                    DEPARTMENT_CREATE,
+                    DESKTOP_READ,
+                    DESKTOP_UPDATE,
+                    DESKTOP_DELETE,
+                    DESKTOP_CREATE
             )
     )
 
