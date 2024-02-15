@@ -14,5 +14,7 @@ public interface ReservationMapper {
     ReservationDto toDto(Reservation reservation, @MappingTarget ReservationDto reservationDto);
 
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "startTime", source = "startTstamp")
+    @Mapping(target = "endTime", source = "endTstamp")
     Reservation toEntity(ReservationDto reservationDto, @MappingTarget Reservation reservation);
 }
